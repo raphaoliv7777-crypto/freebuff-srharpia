@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Second brain — SrHarpia</title>
+<link rel="icon" href="assets/img/mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap.min.css">
+<link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body data-page="second-brain">
+<div class="shell">
+  <aside class="sidebar">
+    <a class="brand" href="index.html" aria-label="SrHarpia — início"><img src="assets/img/logo.svg" alt="SrHarpia"></a>
+    <nav class="nav" aria-label="Navegação principal">
+      <a class="nav-item" data-nav="visao" href="index.html"><span data-icon="home"></span>Visão geral</a>
+      <a class="nav-item" data-nav="topologia" href="topologia.html"><span data-icon="git-fork"></span>Topológico</a>
+      <a class="nav-item" data-nav="servicos" href="servicos.html"><span data-icon="boxes"></span>Serviços</a>
+      <a class="nav-item" data-nav="tracing" href="tracing.html"><span data-icon="waypoints"></span>Tracing</a>
+      <a class="nav-item" data-nav="metricas" href="metricas.html"><span data-icon="activity"></span>Métricas</a>
+      <a class="nav-item" data-nav="logs" href="logs.html"><span data-icon="terminal"></span>Logs</a>
+      <a class="nav-item" data-nav="alertas" href="alertas.html"><span data-icon="bell"></span>Alertas</a>
+      <div class="nav-sep"></div>
+      <a class="nav-item" data-nav="second-brain" href="second-brain.html"><span data-icon="brain"></span>Second brain</a>
+      <a class="nav-item" data-nav="configuracoes" href="configuracoes.html"><span data-icon="settings"></span>Configurações</a>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="version">SrHarpia v2.8.0</div>
+      <div class="cluster">prd-south · 124 serviços</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="page-head">
+      <div>
+        <div class="title-row">
+          <button class="icon-btn nav-toggle" data-nav-toggle aria-label="Abrir menu"><span data-icon="list"></span></button>
+          <h1 class="page-title">Second brain</h1>
+        </div>
+        <p class="page-sub">Mapa de conteúdo do projeto: arquitetura, observabilidade, operação, dados e decisões.</p>
+      </div>
+      <div class="head-actions">
+        <label class="search-field" for="brainSearch">
+          <span data-icon="search"></span>
+          <input id="brainSearch" type="text" placeholder="Buscar notas, tags ou título" autocomplete="off">
+        </label>
+        <button class="btn btn-outline" id="newNote"><span data-icon="plus"></span>Nova nota</button>
+        <div class="avatar" title="Débora Lima">DL</div>
+      </div>
+    </header>
+
+    <section class="card mb-20">
+      <div class="topo-toolbar">
+        <div>
+          <div class="card-title"><span data-icon="brain"></span>Grafo de conhecimento</div>
+          <div class="card-sub" id="graphMeta">—</div>
+        </div>
+        <div class="topo-tools">
+          <span class="topo-zoom-label" id="graphZoom">100%</span>
+          <button class="tool" data-graph="out" aria-label="Afastar"><span data-icon="zoom-out"></span></button>
+          <button class="tool" data-graph="in" aria-label="Aproximar"><span data-icon="zoom-in"></span></button>
+          <button class="tool" data-graph="reset" aria-label="Centralizar grafo"><span data-icon="maximize"></span></button>
+          <button class="tool" data-graph="moc" aria-label="Somente ligações do MOC" title="Somente ligações do MOC"><span data-icon="list"></span></button>
+        </div>
+      </div>
+
+      <div class="brain-graph" id="brainGraph">
+        <svg id="brainSvg" viewBox="0 0 1000 520" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Grafo de notas do second brain">
+          <g id="graphGroup">
+            <g id="graphEdges"></g>
+            <g id="graphNodes"></g>
+          </g>
+        </svg>
+        <div class="graph-legend" id="graphLegend"></div>
+      </div>
+
+      <div class="card-foot">
+        <span class="dim" style="font-size:11px">Arraste para navegar · clique em um nó para ler a nota · as arestas são ligações reais entre notas</span>
+        <span class="dim mono" style="font-size:10px" id="graphCounts">—</span>
+      </div>
+    </section>
+
+    <div class="grid grid-2-1">
+      <section class="card">
+        <div class="card-head">
+          <div class="card-title"><span data-icon="list"></span>Mapa de conteúdo</div>
+          <span class="dim" style="font-size:11px">MOC</span>
+        </div>
+        <div class="card-body">
+          <div class="grid grid-2" id="mocList"></div>
+          <div class="mt-20" id="mocEmpty" hidden>
+            <div class="empty-state" style="padding:28px 20px">
+              <span data-icon="search"></span>
+              <span class="t">Nenhuma nota encontrada.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="stack">
+        <section class="card">
+          <div class="card-head"><div class="card-title"><span data-icon="layers"></span>Estado do grafo</div></div>
+          <div class="card-body" style="padding-top:0">
+            <div class="row-between" style="padding:8px 0;border-bottom:1px solid var(--line-soft)"><span class="muted" style="font-size:11.5px">Notas</span><span class="num" id="statNotes">—</span></div>
+            <div class="row-between" style="padding:8px 0;border-bottom:1px solid var(--line-soft)"><span class="muted" style="font-size:11.5px">Ligações</span><span class="num" id="statLinks">—</span></div>
+            <div class="row-between" style="padding:8px 0;border-bottom:1px solid var(--line-soft)"><span class="muted" style="font-size:11.5px">Clusters</span><span class="num">5</span></div>
+            <div class="row-between" style="padding:8px 0"><span class="muted" style="font-size:11.5px">Notas órfãs</span><span class="num" id="statOrphans">—</span></div>
+          </div>
+          <div class="card-foot">
+            <span class="dim" style="font-size:10.5px">Atualizado em 11 nov 2026</span>
+            <a class="card-link" href="#mocList">Ir ao índice <span data-icon="arrow-down"></span></a>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-head"><div class="card-title"><span data-icon="clock"></span>Notas recentes</div></div>
+          <div class="card-body" style="padding-top:0" id="recentNotes"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="drawer-backdrop" id="noteBackdrop"></div>
+<aside class="drawer note-drawer" id="noteDrawer" aria-hidden="true" aria-label="Leitura da nota">
+  <div class="drawer-head">
+    <div style="min-width:0">
+      <div class="eyebrow" id="noteCluster">—</div>
+      <div class="drawer-title" id="noteTitle">—</div>
+      <div class="drawer-sub" id="noteSub">—</div>
+    </div>
+    <div class="row-inline" style="gap:4px;flex-wrap:nowrap">
+      <button class="icon-btn" id="focusNote" aria-label="Centralizar no grafo" title="Centralizar no grafo"><span data-icon="crosshair"></span></button>
+      <button class="icon-btn" id="closeNote" aria-label="Fechar nota"><span data-icon="x"></span></button>
+    </div>
+  </div>
+  <div class="drawer-body">
+    <div class="note-meta mb-16" id="noteMetaRow"></div>
+    <div class="note-body" id="noteBody"></div>
+    <div class="hr mt-24 mb-16"></div>
+    <div class="eyebrow mb-8">Ligações</div>
+    <div class="note-links" id="noteLinks"></div>
+    <div class="eyebrow mt-20 mb-8">Backlinks</div>
+    <div class="note-links" id="noteBacklinks"></div>
+  </div>
+</aside>
+
+<script src="assets/js/icons.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/brain.js"></script>
+</body>
+</html>

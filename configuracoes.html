@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Configurações — SrHarpia</title>
+<link rel="icon" href="assets/img/mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap.min.css">
+<link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body data-page="configuracoes">
+<div class="shell">
+  <aside class="sidebar">
+    <a class="brand" href="index.html" aria-label="SrHarpia — início"><img src="assets/img/logo.svg" alt="SrHarpia"></a>
+    <nav class="nav" aria-label="Navegação principal">
+      <a class="nav-item" data-nav="visao" href="index.html"><span data-icon="home"></span>Visão geral</a>
+      <a class="nav-item" data-nav="topologia" href="topologia.html"><span data-icon="git-fork"></span>Topológico</a>
+      <a class="nav-item" data-nav="servicos" href="servicos.html"><span data-icon="boxes"></span>Serviços</a>
+      <a class="nav-item" data-nav="tracing" href="tracing.html"><span data-icon="waypoints"></span>Tracing</a>
+      <a class="nav-item" data-nav="metricas" href="metricas.html"><span data-icon="activity"></span>Métricas</a>
+      <a class="nav-item" data-nav="logs" href="logs.html"><span data-icon="terminal"></span>Logs</a>
+      <a class="nav-item" data-nav="alertas" href="alertas.html"><span data-icon="bell"></span>Alertas</a>
+      <div class="nav-sep"></div>
+      <a class="nav-item" data-nav="second-brain" href="second-brain.html"><span data-icon="brain"></span>Second brain</a>
+      <a class="nav-item" data-nav="configuracoes" href="configuracoes.html"><span data-icon="settings"></span>Configurações</a>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="version">SrHarpia v2.8.0</div>
+      <div class="cluster">prd-south · 124 serviços</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="page-head">
+      <div>
+        <div class="title-row">
+          <button class="icon-btn nav-toggle" data-nav-toggle aria-label="Abrir menu"><span data-icon="list"></span></button>
+          <h1 class="page-title">Configurações</h1>
+        </div>
+        <p class="page-sub">Workspace, notificações, retenção de telemetria, integrações e acessos.</p>
+      </div>
+      <div class="head-actions">
+        <button class="btn btn-lime" id="saveAll"><span data-icon="check"></span>Salvar alterações</button>
+        <div class="avatar" title="Débora Lima">DL</div>
+      </div>
+    </header>
+
+    <div class="grid grid-280">
+      <aside class="card" style="align-self:start">
+        <div class="card-body" style="padding:12px 10px">
+          <div class="settings-nav" id="settingsNav">
+            <button class="is-active" data-section="geral">Geral</button>
+            <button data-section="notificacoes">Notificações</button>
+            <button data-section="retencao">Retenção de dados</button>
+            <button data-section="integracoes">Integrações</button>
+            <button data-section="chaves">Chaves de API</button>
+            <button data-section="equipe">Equipe e acesso</button>
+          </div>
+        </div>
+        <div class="card-foot" style="padding:12px 18px">
+          <span class="dim" style="font-size:10.5px">Última alteração há 2 dias</span>
+        </div>
+      </aside>
+
+      <div class="stack" id="settingsPanels">
+        <section class="card" data-panel="geral">
+          <div class="settings-section">
+            <h3>Identidade do workspace</h3>
+            <p class="help">Informações usadas nos painéis, relatórios e notificações.</p>
+            <div class="form-grid">
+              <div class="field"><label for="wsName">Nome do workspace</label><input class="input" id="wsName" type="text" value="SrHarpia"></div>
+              <div class="field"><label for="wsRegion">Região de coleta</label>
+                <div class="select-wrap"><select class="select" id="wsRegion"><option>prd-south (São Paulo)</option><option>prd-north (Virginia)</option><option>prd-eu (Frankfurt)</option></select><span class="chev" data-icon="chevron-down"></span></div>
+              </div>
+              <div class="field"><label for="wsTz">Fuso horário</label>
+                <div class="select-wrap"><select class="select" id="wsTz"><option>America/Sao_Paulo (UTC-3)</option><option>UTC</option><option>America/New_York</option></select><span class="chev" data-icon="chevron-down"></span></div>
+              </div>
+              <div class="field"><label for="wsLang">Idioma</label>
+                <div class="select-wrap"><select class="select" id="wsLang"><option>Português (Brasil)</option><option>English</option><option>Español</option></select><span class="chev" data-icon="chevron-down"></span></div>
+              </div>
+            </div>
+          </div>
+          <div class="settings-section">
+            <h3>Preferências de leitura</h3>
+            <div class="option-row">
+              <div><div class="opt-title">Densidade compacta nas tabelas</div><div class="opt-sub">Reduz o espaçamento vertical para exibir mais linhas por tela.</div></div>
+              <button class="switch is-on" role="switch" aria-checked="true" data-switch aria-label="Densidade compacta"></button>
+            </div>
+            <div class="option-row">
+              <div><div class="opt-title">Animar transições do mapa topológico</div><div class="opt-sub">Desative para reduzir custo de renderização em máquinas modestas.</div></div>
+              <button class="switch is-on" role="switch" aria-checked="true" data-switch aria-label="Animações do mapa"></button>
+            </div>
+            <div class="option-row">
+              <div><div class="opt-title">Sons de alerta crítico</div><div class="opt-sub">Emite um sinal sonoro apenas para severidade crítica.</div></div>
+              <button class="switch" role="switch" aria-checked="false" data-switch aria-label="Sons de alerta"></button>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" data-panel="notificacoes" hidden>
+          <div class="settings-section">
+            <h3>Canais de notificação</h3>
+            <p class="help">Alertas críticos acionam o plantão em até 30 segundos.</p>
+            <div class="option-row">
+              <div><div class="opt-title">E-mail</div><div class="opt-sub">sre@harpia.io · alertas críticos e resumo diário</div></div>
+              <button class="switch is-on" role="switch" aria-checked="true" data-switch aria-label="Notificação por e-mail"></button>
+            </div>
+            <div class="option-row">
+              <div><div class="opt-title">Slack</div><div class="opt-sub">canal #sre-alertas · todas as severidades</div></div>
+              <button class="switch is-on" role="switch" aria-checked="true" data-switch aria-label="Notificação no Slack"></button>
+            </div>
+            <div class="option-row">
+              <div><div class="opt-title">Webhook</div><div class="opt-sub">POST assinado para o endpoint de incidentes</div></div>
+              <button class="switch is-on" role="switch" aria-checked="true" data-switch aria-label="Notificação por webhook"></button>
+            </div>
+            <div class="form-grid mt-16">
+              <div class="field span-2"><label for="webhookUrl">Endpoint do webhook</label><input class="input mono" id="webhookUrl" type="text" value="https://hooks.harpia.io/incidentes/srharpia"></div>
+              <div class="field"><label for="quietStart">Início da janela de silêncio</label><input class="input" id="quietStart" type="time" value="23:00"></div>
+              <div class="field"><label for="quietEnd">Fim da janela de silêncio</label><input class="input" id="quietEnd" type="time" value="07:00"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" data-panel="retencao" hidden>
+          <div class="settings-section">
+            <h3>Retenção por tipo de telemetria</h3>
+            <p class="help">Dados frios são armazenados em objetos e consultados sob demanda.</p>
+            <div class="form-grid">
+              <div class="field"><label for="retMetrics">Métricas</label>
+                <div class="select-wrap"><select class="select" id="retMetrics"><option>13 meses</option><option>6 meses</option><option>3 meses</option></select><span class="chev" data-icon="chevron-down"></span></div>
+              </div>
+              <div class="field"><label for="retLogs">Logs</label>
+                <div class="select-wrap"><select class="select" id="retLogs"><option>30 dias</option><option>14 dias</option><option>7 dias</option></select><span class="chev" data-icon="chevron-down"></span></div>
+              </div>
+              <div class="field"><label for="retTraces">Traces</label>
+                <div class="select-wrap"><select class="select" id="retTraces"><option>7 dias</option><option>14 dias</option><option>3 dias</option></select><span class="chev" data-icon="chevron-down"></span></div>
+              </div>
+              <div class="field"><label for="retSample">Amostragem de debug</label>
+                <div class="select-wrap"><select class="select" id="retSample"><option>10%</option><option>5%</option><option>25%</option></select><span class="chev" data-icon="chevron-down"></span></div>
+              </div>
+            </div>
+            <div class="option-row mt-12">
+              <div><div class="opt-title">Exportação para camada fria</div><div class="opt-sub">Copia rollups de 1 hora para o bucket de longo prazo.</div></div>
+              <button class="switch is-on" role="switch" aria-checked="true" data-switch aria-label="Exportação para camada fria"></button>
+            </div>
+            <div class="row-between mt-12" style="padding:12px 14px;background:#171717;border:1px solid var(--line-soft);border-radius:6px">
+              <span class="dim" style="font-size:11px">Custo estimado de armazenamento</span>
+              <span class="num" style="font-size:12px">US$ 1.840 / mês</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" data-panel="integracoes" hidden>
+          <div class="settings-section">
+            <h3>Integrações</h3>
+            <p class="help">Conecte a telemetria da SrHarpia às ferramentas já usadas pelo time.</p>
+            <div id="integrations"></div>
+          </div>
+        </section>
+
+        <section class="card" data-panel="chaves" hidden>
+          <div class="settings-section">
+            <div class="row-between">
+              <div><h3>Chaves de API</h3><p class="help">Usadas por agentes de coleta e automações. Valores são exibidos uma única vez na criação.</p></div>
+              <button class="btn btn-outline btn-sm" id="newKey"><span data-icon="plus"></span>Criar chave</button>
+            </div>
+            <div class="mt-16" id="keyRows"></div>
+          </div>
+        </section>
+
+        <section class="card" data-panel="equipe" hidden>
+          <div class="settings-section">
+            <h3>Equipe e acesso</h3>
+            <p class="help">Perfis definem quem pode silenciar alertas e alterar regras.</p>
+            <div class="table-wrap mt-16">
+              <table class="data">
+                <thead><tr><th>Pessoa</th><th>Papel</th><th>2FA</th><th>Último acesso</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td><div class="cell-main">Débora Lima</div><div class="cell-sub">deborah@harpia.io</div></td><td class="muted">SRE · administradora</td><td class="green">ativo</td><td class="mono dim">agora</td><td class="cell-actions"><button class="row-menu" aria-label="Ações"><span data-icon="more-vertical"></span></button></td></tr>
+                  <tr><td><div class="cell-main">Rafael Nunes</div><div class="cell-sub">rafael@harpia.io</div></td><td class="muted">Engenharia · editor</td><td class="green">ativo</td><td class="mono dim">há 2h</td><td class="cell-actions"><button class="row-menu" aria-label="Ações"><span data-icon="more-vertical"></span></button></td></tr>
+                  <tr><td><div class="cell-main">Marina Costa</div><div class="cell-sub">marina@harpia.io</div></td><td class="muted">Produto · leitura</td><td class="amber">pendente</td><td class="mono dim">ontem</td><td class="cell-actions"><button class="row-menu" aria-label="Ações"><span data-icon="more-vertical"></span></button></td></tr>
+                  <tr><td><div class="cell-main">Agente de coleta</div><div class="cell-sub">service-account</div></td><td class="muted">Automação · escrita</td><td class="dim">—</td><td class="mono dim">há 12s</td><td class="cell-actions"><button class="row-menu" aria-label="Ações"><span data-icon="more-vertical"></span></button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <div class="row-between">
+          <span class="dim" style="font-size:11px">As alterações valem apenas para o ambiente prd-south.</span>
+          <button class="btn btn-outline" id="resetSettings"><span data-icon="rotate-ccw"></span>Descartar</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="assets/js/icons.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/settings.js"></script>
+</body>
+</html>

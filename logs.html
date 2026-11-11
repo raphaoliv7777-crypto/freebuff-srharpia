@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logs e registros — SrHarpia</title>
+<link rel="icon" href="assets/img/mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap.min.css">
+<link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body data-page="logs">
+<div class="shell">
+  <aside class="sidebar">
+    <a class="brand" href="index.html" aria-label="SrHarpia — início"><img src="assets/img/logo.svg" alt="SrHarpia"></a>
+    <nav class="nav" aria-label="Navegação principal">
+      <a class="nav-item" data-nav="visao" href="index.html"><span data-icon="home"></span>Visão geral</a>
+      <a class="nav-item" data-nav="topologia" href="topologia.html"><span data-icon="git-fork"></span>Topológico</a>
+      <a class="nav-item" data-nav="servicos" href="servicos.html"><span data-icon="boxes"></span>Serviços</a>
+      <a class="nav-item" data-nav="tracing" href="tracing.html"><span data-icon="waypoints"></span>Tracing</a>
+      <a class="nav-item" data-nav="metricas" href="metricas.html"><span data-icon="activity"></span>Métricas</a>
+      <a class="nav-item" data-nav="logs" href="logs.html"><span data-icon="terminal"></span>Logs</a>
+      <a class="nav-item" data-nav="alertas" href="alertas.html"><span data-icon="bell"></span>Alertas</a>
+      <div class="nav-sep"></div>
+      <a class="nav-item" data-nav="second-brain" href="second-brain.html"><span data-icon="brain"></span>Second brain</a>
+      <a class="nav-item" data-nav="configuracoes" href="configuracoes.html"><span data-icon="settings"></span>Configurações</a>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="version">SrHarpia v2.8.0</div>
+      <div class="cluster">prd-south · 124 serviços</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="page-head">
+      <div>
+        <div class="title-row">
+          <button class="icon-btn nav-toggle" data-nav-toggle aria-label="Abrir menu"><span data-icon="list"></span></button>
+          <h1 class="page-title">Logs e registros</h1>
+        </div>
+        <p class="page-sub">Stream em tempo real com filtros combináveis, busca textual e expressão regular.</p>
+      </div>
+      <div class="head-actions">
+        <button class="btn btn-outline" id="pauseBtn"><span data-icon="pause"></span><span id="pauseLabel">Pausar</span></button>
+        <button class="icon-btn" id="downloadLogs" aria-label="Exportar logs"><span data-icon="download"></span></button>
+        <button class="icon-btn" data-palette aria-label="Buscar (Ctrl K)"><span data-icon="search"></span></button>
+        <div class="avatar" title="Débora Lima">DL</div>
+      </div>
+    </header>
+
+    <div class="stat-strip mb-20">
+      <div class="stat"><div class="v" id="statTotal">—</div><div class="k">eventos na sessão</div></div>
+      <div class="stat"><div class="v" style="color:var(--red)" id="statErr">—</div><div class="k">erros</div></div>
+      <div class="stat"><div class="v" style="color:var(--amber)" id="statWarn">—</div><div class="k">avisos</div></div>
+      <div class="stat"><div class="v" id="statRate">—</div><div class="k">taxa de erro</div></div>
+    </div>
+
+    <section class="card">
+      <div class="filter-bar">
+        <label class="search-field" for="logSearch">
+          <span data-icon="search"></span>
+          <input id="logSearch" type="text" placeholder="Buscar mensagem, trace id ou host" autocomplete="off">
+          <kbd id="regexHint">texto</kbd>
+        </label>
+        <button class="regex-toggle" id="regexToggle" title="Interpretar a busca como expressão regular">
+          <span data-icon="code"></span><span class="mono">.*</span>Regex
+        </button>
+        <div class="select-wrap compact">
+          <select class="select" id="logService" aria-label="Serviço"></select>
+          <span class="chev" data-icon="chevron-down"></span>
+        </div>
+        <div class="select-wrap compact">
+          <select class="select" id="logHost" aria-label="Host"></select>
+          <span class="chev" data-icon="chevron-down"></span>
+        </div>
+        <button class="btn btn-outline" id="addFilterBtn"><span data-icon="plus"></span>Filtro</button>
+        <span class="regex-error" id="regexError"></span>
+      </div>
+
+      <div class="filter-builder" id="filterBuilder" hidden>
+        <select class="select" id="filterField" aria-label="Campo do filtro">
+          <option value="service">serviço</option>
+          <option value="host">host</option>
+          <option value="level">nível</option>
+          <option value="trace">trace id</option>
+        </select>
+        <input class="input" id="filterValue" type="text" placeholder="valor exato">
+        <button class="btn btn-sm" id="applyFilter">Aplicar</button>
+        <button class="btn btn-sm btn-outline" id="cancelFilter">Cancelar</button>
+      </div>
+
+      <div class="active-filters" id="activeFilters" hidden></div>
+
+      <div class="log-toolbar">
+        <div class="row-inline" style="gap:14px">
+          <div class="segmented" id="levelGroup" role="group" aria-label="Nível do log">
+            <button data-level="" class="is-active">Todos</button>
+            <button data-level="info">Info</button>
+            <button data-level="warn">Warn</button>
+            <button data-level="error">Error</button>
+            <button data-level="debug">Debug</button>
+          </div>
+          <span class="live-indicator"><span class="dot pulse" data-state="ok" id="liveDot"></span><span id="liveText">Ao vivo</span></span>
+        </div>
+        <div class="counts" id="logCounts"></div>
+      </div>
+
+      <div class="log-stream" id="logStream" aria-live="polite"></div>
+
+      <div class="card-foot">
+        <span class="dim" style="font-size:11px">Retenção de 7 dias em busca completa · 30 dias em consulta lenta</span>
+        <div class="row-inline">
+          <button class="btn btn-sm btn-outline" id="clearLogs"><span data-icon="trash"></span>Limpar</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/icons.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/logs.js"></script>
+</body>
+</html>

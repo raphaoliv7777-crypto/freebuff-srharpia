@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Distributed tracing — SrHarpia</title>
+<link rel="icon" href="assets/img/mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap.min.css">
+<link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body data-page="tracing">
+<div class="shell">
+  <aside class="sidebar">
+    <a class="brand" href="index.html" aria-label="SrHarpia — início"><img src="assets/img/logo.svg" alt="SrHarpia"></a>
+    <nav class="nav" aria-label="Navegação principal">
+      <a class="nav-item" data-nav="visao" href="index.html"><span data-icon="home"></span>Visão geral</a>
+      <a class="nav-item" data-nav="topologia" href="topologia.html"><span data-icon="git-fork"></span>Topológico</a>
+      <a class="nav-item" data-nav="servicos" href="servicos.html"><span data-icon="boxes"></span>Serviços</a>
+      <a class="nav-item" data-nav="tracing" href="tracing.html"><span data-icon="waypoints"></span>Tracing</a>
+      <a class="nav-item" data-nav="metricas" href="metricas.html"><span data-icon="activity"></span>Métricas</a>
+      <a class="nav-item" data-nav="logs" href="logs.html"><span data-icon="terminal"></span>Logs</a>
+      <a class="nav-item" data-nav="alertas" href="alertas.html"><span data-icon="bell"></span>Alertas</a>
+      <div class="nav-sep"></div>
+      <a class="nav-item" data-nav="second-brain" href="second-brain.html"><span data-icon="brain"></span>Second brain</a>
+      <a class="nav-item" data-nav="configuracoes" href="configuracoes.html"><span data-icon="settings"></span>Configurações</a>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="version">SrHarpia v2.8.0</div>
+      <div class="cluster">prd-south · 124 serviços</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="page-head">
+      <div>
+        <div class="title-row">
+          <button class="icon-btn nav-toggle" data-nav-toggle aria-label="Abrir menu"><span data-icon="list"></span></button>
+          <h1 class="page-title">Distributed tracing</h1>
+        </div>
+        <p class="page-sub">Rastreamento ponta a ponta das requisições entre serviços, com waterfall de spans e caminho crítico.</p>
+      </div>
+      <div class="head-actions">
+        <a class="btn btn-outline" href="topologia.html"><span data-icon="git-fork"></span>Mapa</a>
+        <button class="icon-btn" data-palette aria-label="Buscar (Ctrl K)"><span data-icon="search"></span></button>
+        <a class="icon-btn" href="alertas.html" aria-label="Alertas ativos"><span data-icon="bell"></span><span class="notif"></span></a>
+        <div class="avatar" title="Débora Lima">DL</div>
+      </div>
+    </header>
+
+    <div class="stat-strip mb-20">
+      <div class="stat"><div class="v">4.820</div><div class="k">traces por minuto</div></div>
+      <div class="stat"><div class="v">412<span style="font-size:12px;color:var(--text-3)">ms</span></div><div class="k">latência p95 dos traces</div></div>
+      <div class="stat"><div class="v" style="color:var(--red)">1,8%</div><div class="k">traces com erro</div></div>
+      <div class="stat"><div class="v">96K</div><div class="k">spans por minuto</div></div>
+    </div>
+
+    <div class="grid grid-3-1">
+      <section class="card">
+        <div class="filter-bar" style="border-bottom:1px solid var(--line-soft)">
+          <label class="search-field" for="traceSearch">
+            <span data-icon="search"></span>
+            <input id="traceSearch" type="text" placeholder="Buscar trace id ou operação" autocomplete="off">
+          </label>
+          <div class="select-wrap compact">
+            <select class="select" id="traceService" aria-label="Serviço raiz"></select>
+            <span class="chev" data-icon="chevron-down"></span>
+          </div>
+          <div class="select-wrap compact">
+            <select class="select" id="traceStatus" aria-label="Status">
+              <option value="">Todo status</option>
+              <option value="crit">Com erro</option>
+              <option value="warn">Acima de 900ms</option>
+            </select>
+            <span class="chev" data-icon="chevron-down"></span>
+          </div>
+          <div class="select-wrap compact">
+            <select class="select" id="traceMin" aria-label="Duração mínima">
+              <option value="0">Qualquer duração</option>
+              <option value="200">acima de 200ms</option>
+              <option value="900">acima de 900ms</option>
+            </select>
+            <span class="chev" data-icon="chevron-down"></span>
+          </div>
+        </div>
+        <div class="card-body tight">
+          <div class="table-wrap">
+            <table class="data">
+              <thead>
+                <tr>
+                  <th>Trace</th>
+                  <th>Serviço raiz</th>
+                  <th>Operação</th>
+                  <th style="width:180px">Duração</th>
+                  <th class="cell-num">Spans</th>
+                  <th class="cell-num">Erros</th>
+                  <th class="cell-num">Horário</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="traceRows"></tbody>
+            </table>
+          </div>
+          <div class="row-between" style="padding:14px 0 4px">
+            <span class="dim" style="font-size:11px" id="traceCount">—</span>
+            <span class="dim" style="font-size:11px">amostragem adaptativa · 20% base · 100% em erro</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="stack">
+        <section class="card">
+          <div class="card-head"><div class="card-title"><span data-icon="activity"></span>Latência por serviço</div></div>
+          <div class="card-body" style="padding-top:0"><div id="latByService"></div></div>
+        </section>
+        <section class="card">
+          <div class="card-head"><div class="card-title"><span data-icon="filter"></span>Amostragem</div></div>
+          <div class="card-body" style="padding-top:0">
+            <div class="row-between" style="padding:8px 0;border-bottom:1px solid var(--line-soft)">
+              <span class="muted" style="font-size:11.5px">Taxa base</span><span class="num">20%</span>
+            </div>
+            <div class="row-between" style="padding:8px 0;border-bottom:1px solid var(--line-soft)">
+              <span class="muted" style="font-size:11.5px">Erros</span><span class="num">100%</span>
+            </div>
+            <div class="row-between" style="padding:8px 0;border-bottom:1px solid var(--line-soft)">
+              <span class="muted" style="font-size:11.5px">Acima de 1s</span><span class="num">100%</span>
+            </div>
+            <div class="row-between" style="padding:8px 0">
+              <span class="muted" style="font-size:11.5px">Volume diário</span><span class="num">96M spans</span>
+            </div>
+            <p class="dim mt-12" style="font-size:10.5px;line-height:1.55">O volume fica abaixo do teto de 120M spans/dia. Ajustes são recalculados a cada minuto por serviço.</p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="drawer-backdrop" id="traceBackdrop"></div>
+<aside class="drawer" id="traceDrawer" aria-hidden="true" aria-label="Detalhes do trace">
+  <div class="drawer-head">
+    <div>
+      <div class="eyebrow mb-8">Trace distribuído</div>
+      <div class="drawer-title" id="drawerOp">—</div>
+      <div class="drawer-sub mono" id="drawerId">—</div>
+    </div>
+    <div class="row-inline" style="gap:4px;flex-wrap:nowrap">
+      <button class="icon-btn" id="copyTrace" aria-label="Copiar trace id"><span data-icon="copy"></span></button>
+      <button class="icon-btn" id="closeTrace" aria-label="Fechar"><span data-icon="x"></span></button>
+    </div>
+  </div>
+  <div class="drawer-body" id="traceBody"></div>
+</aside>
+
+<script src="assets/js/icons.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/tracing.js"></script>
+</body>
+</html>

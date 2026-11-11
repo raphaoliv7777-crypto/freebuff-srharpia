@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Serviço — SrHarpia</title>
+<link rel="icon" href="assets/img/mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap.min.css">
+<link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body data-page="servicos">
+<div class="shell">
+  <aside class="sidebar">
+    <a class="brand" href="index.html" aria-label="SrHarpia — início"><img src="assets/img/logo.svg" alt="SrHarpia"></a>
+    <nav class="nav" aria-label="Navegação principal">
+      <a class="nav-item" data-nav="visao" href="index.html"><span data-icon="home"></span>Visão geral</a>
+      <a class="nav-item" data-nav="topologia" href="topologia.html"><span data-icon="git-fork"></span>Topológico</a>
+      <a class="nav-item" data-nav="servicos" href="servicos.html"><span data-icon="boxes"></span>Serviços</a>
+      <a class="nav-item" data-nav="tracing" href="tracing.html"><span data-icon="waypoints"></span>Tracing</a>
+      <a class="nav-item" data-nav="metricas" href="metricas.html"><span data-icon="activity"></span>Métricas</a>
+      <a class="nav-item" data-nav="logs" href="logs.html"><span data-icon="terminal"></span>Logs</a>
+      <a class="nav-item" data-nav="alertas" href="alertas.html"><span data-icon="bell"></span>Alertas</a>
+      <div class="nav-sep"></div>
+      <a class="nav-item" data-nav="second-brain" href="second-brain.html"><span data-icon="brain"></span>Second brain</a>
+      <a class="nav-item" data-nav="configuracoes" href="configuracoes.html"><span data-icon="settings"></span>Configurações</a>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="version">SrHarpia v2.8.0</div>
+      <div class="cluster">prd-south · 124 serviços</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="crumbs"><a href="servicos.html">Serviços</a><span class="sep">/</span><span id="crumbName">—</span></div>
+
+    <header class="page-head">
+      <div>
+        <div class="title-row">
+          <button class="icon-btn nav-toggle" data-nav-toggle aria-label="Abrir menu"><span data-icon="list"></span></button>
+          <h1 class="page-title" id="svcName">—</h1>
+          <span class="status" id="svcState" style="margin-left:8px;font-size:12px"><span class="dot"></span>—</span>
+        </div>
+        <p class="page-sub" id="svcMeta">—</p>
+      </div>
+      <div class="head-actions">
+        <a class="btn btn-outline" id="logsLink" href="logs.html"><span data-icon="terminal"></span>Ver logs</a>
+        <a class="btn btn-lime" id="traceLink" href="tracing.html"><span data-icon="waypoints"></span>Abrir trace</a>
+        <button class="icon-btn" data-menu-trigger="svcMenu" aria-label="Mais ações"><span data-icon="more-horizontal"></span></button>
+        <div class="avatar" title="Débora Lima">DL</div>
+      </div>
+    </header>
+
+    <div class="grid grid-4 mb-24">
+      <article class="card kpi">
+        <div class="kpi-top"><span class="kpi-label">Requisições/s</span><span class="delta"><span data-icon="arrow-up"></span>4,2%</span></div>
+        <div class="kpi-value" id="kpiRps">—</div>
+        <div class="kpi-foot">média na janela de 5 min</div>
+      </article>
+      <article class="card kpi">
+        <div class="kpi-top"><span class="kpi-label">Latência p95</span><span class="delta is-warn"><span data-icon="arrow-up"></span>12%</span></div>
+        <div class="kpi-value" id="kpiP95">—</div>
+        <div class="kpi-foot" id="kpiPerc">—</div>
+      </article>
+      <article class="card kpi">
+        <div class="kpi-top"><span class="kpi-label">Taxa de erro</span><span class="delta is-bad"><span data-icon="arrow-up"></span>0,4%</span></div>
+        <div class="kpi-value" id="kpiErr">—</div>
+        <div class="kpi-foot">respostas 5xx na janela</div>
+      </article>
+      <article class="card kpi">
+        <div class="kpi-top"><span class="kpi-label">SLO de disponibilidade</span><span class="delta"><span data-icon="check"></span>no alvo</span></div>
+        <div class="kpi-value" id="kpiSlo">—</div>
+        <div class="kpi-gauge" style="padding-top:12px">
+          <div class="meter" data-tone="lime"><span id="sloBar" style="width:0%"></span></div>
+          <div class="kpi-foot" id="sloFoot">—</div>
+        </div>
+      </article>
+    </div>
+
+    <div class="tabs mb-20" data-tabs="svc">
+      <button class="tab is-active" data-tab="overview">Visão geral</button>
+      <button class="tab" data-tab="endpoints">Endpoints <span class="count" id="tabEpCount">—</span></button>
+      <button class="tab" data-tab="deps">Dependências <span class="count" id="tabDepCount">—</span></button>
+      <button class="tab" data-tab="svcLogs">Logs recentes</button>
+    </div>
+
+    <div data-tab-panel="overview">
+      <div class="grid grid-2-1 mb-20">
+        <section class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title"><span data-icon="activity"></span>Latência por percentil</div>
+              <div class="card-sub">Últimas 24 horas · resolução de 1 minuto</div>
+            </div>
+            <div class="legend">
+              <span class="legend-item"><span class="swatch" style="background:#D7FF00"></span>p50</span>
+              <span class="legend-item"><span class="swatch" style="background:#6F9AFF"></span>p95</span>
+              <span class="legend-item"><span class="swatch" style="background:#FFC61A"></span>p99</span>
+            </div>
+          </div>
+          <div class="card-body" style="padding-top:2px">
+            <div class="chart" id="latencyChart"></div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-head"><div class="card-title"><span data-icon="shield"></span>Metas do serviço</div></div>
+          <div class="card-body" style="padding-top:0">
+            <div class="row-between" style="padding:10px 0;border-bottom:1px solid var(--line-soft)">
+              <span class="muted" style="font-size:11.5px">Disponibilidade</span>
+              <span class="num" id="goalAvail">—</span>
+            </div>
+            <div class="row-between" style="padding:10px 0;border-bottom:1px solid var(--line-soft)">
+              <span class="muted" style="font-size:11.5px">Latência p95</span>
+              <span class="num" id="goalLat">—</span>
+            </div>
+            <div class="row-between" style="padding:10px 0;border-bottom:1px solid var(--line-soft)">
+              <span class="muted" style="font-size:11.5px">Taxa de erro 5xx</span>
+              <span class="num" id="goalErr">—</span>
+            </div>
+            <div class="row-between" style="padding:10px 0">
+              <span class="muted" style="font-size:11.5px">Uptime (30 dias)</span>
+              <span class="num" id="goalUp">—</span>
+            </div>
+            <div class="mt-16" style="padding:12px 14px;background:#171717;border:1px solid var(--line-soft);border-radius:6px">
+              <div class="eyebrow">Orçamento de erro restante</div>
+              <div class="row-between mt-8">
+                <span class="num" style="font-size:18px;font-weight:600" id="budget">—</span>
+                <span class="dim" style="font-size:10.5px">ciclo de 30 dias</span>
+              </div>
+              <div class="meter mt-8" data-tone="lime"><span id="budgetBar" style="width:0%"></span></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="grid grid-2">
+        <section class="card">
+          <div class="card-head">
+            <div class="card-title"><span data-icon="trending-up"></span>Requisições por segundo</div>
+            <span class="dim" style="font-size:11px">1 min · 24h</span>
+          </div>
+          <div class="card-body" style="padding-top:0"><div class="chart" id="rpsChart"></div></div>
+        </section>
+        <section class="card">
+          <div class="card-head">
+            <div class="card-title"><span data-icon="alert-triangle"></span>Operações mais lentas</div>
+            <span class="dim" style="font-size:11px">p95 na janela</span>
+          </div>
+          <div class="card-body tight">
+            <table class="data">
+              <thead><tr><th>Operação</th><th class="cell-num">p95</th><th class="cell-num">Req/s</th><th class="cell-num">Erros</th></tr></thead>
+              <tbody id="slowRows"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div data-tab-panel="endpoints" hidden>
+      <section class="card">
+        <div class="card-head">
+          <div class="card-title"><span data-icon="git-branch"></span>Endpoints observados</div>
+          <span class="dim" style="font-size:11px">janela de 5 minutos · ordenado por latência</span>
+        </div>
+        <div class="card-body tight">
+          <div class="table-wrap">
+            <table class="data">
+              <thead><tr><th>Método</th><th>Rota</th><th class="cell-num">p95</th><th class="cell-num">Req/s</th><th class="cell-num">Erros</th><th>Distribuição</th></tr></thead>
+              <tbody id="epRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div data-tab-panel="deps" hidden>
+      <div class="grid grid-2">
+        <section class="card">
+          <div class="card-head"><div class="card-title"><span data-icon="corner-down-right"></span>Depende de</div></div>
+          <div class="card-body" style="padding-top:0"><div class="list" id="depList"></div></div>
+        </section>
+        <section class="card">
+          <div class="card-head"><div class="card-title"><span data-icon="corner-down-right"></span>Consumido por</div></div>
+          <div class="card-body" style="padding-top:0"><div class="list" id="consumerList"></div></div>
+          <div class="card-foot"><a class="card-link" href="topologia.html">Abrir no mapa topológico <span data-icon="external-link"></span></a></div>
+        </section>
+      </div>
+    </div>
+
+    <div data-tab-panel="svcLogs" hidden>
+      <section class="card">
+        <div class="card-head">
+          <div class="card-title"><span data-icon="terminal"></span>Logs recentes</div>
+          <a class="card-link" id="allLogsLink" href="logs.html">Abrir stream completo <span data-icon="arrow-right"></span></a>
+        </div>
+        <div class="card-body" style="padding-top:0"><div id="svcLogs"></div></div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div class="menu" id="svcMenu">
+  <a href="metricas.html"><span data-icon="activity"></span>Métricas do host</a>
+  <a href="alertas.html"><span data-icon="bell"></span>Criar alerta</a>
+  <div class="sep"></div>
+  <button id="copySvcId"><span data-icon="copy"></span>Copiar ID do serviço</button>
+</div>
+
+<script src="assets/js/icons.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/service.js"></script>
+</body>
+</html>

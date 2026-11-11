@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Visão geral — SrHarpia</title>
+<link rel="icon" href="assets/img/mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap.min.css">
+<link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body data-page="visao">
+<div class="shell">
+  <aside class="sidebar">
+    <a class="brand" href="index.html" aria-label="SrHarpia — início"><img src="assets/img/logo.svg" alt="SrHarpia"></a>
+    <nav class="nav" aria-label="Navegação principal">
+      <a class="nav-item" data-nav="visao" href="index.html"><span data-icon="home"></span>Visão geral</a>
+      <a class="nav-item" data-nav="topologia" href="topologia.html"><span data-icon="git-fork"></span>Topológico</a>
+      <a class="nav-item" data-nav="servicos" href="servicos.html"><span data-icon="boxes"></span>Serviços</a>
+      <a class="nav-item" data-nav="tracing" href="tracing.html"><span data-icon="waypoints"></span>Tracing</a>
+      <a class="nav-item" data-nav="metricas" href="metricas.html"><span data-icon="activity"></span>Métricas</a>
+      <a class="nav-item" data-nav="logs" href="logs.html"><span data-icon="terminal"></span>Logs</a>
+      <a class="nav-item" data-nav="alertas" href="alertas.html"><span data-icon="bell"></span>Alertas</a>
+      <div class="nav-sep"></div>
+      <a class="nav-item" data-nav="second-brain" href="second-brain.html"><span data-icon="brain"></span>Second brain</a>
+      <a class="nav-item" data-nav="configuracoes" href="configuracoes.html"><span data-icon="settings"></span>Configurações</a>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="version">SrHarpia v2.8.0</div>
+      <div class="cluster">prd-south · 124 serviços</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="page-head">
+      <div>
+        <div class="title-row">
+          <button class="icon-btn nav-toggle" data-nav-toggle aria-label="Abrir menu"><span data-icon="list"></span></button>
+          <h1 class="page-title">Visão geral</h1>
+        </div>
+        <p class="page-sub">Tudo sobre controle, em um só lugar.</p>
+      </div>
+      <div class="head-actions">
+        <div class="select-wrap compact">
+          <select class="select" id="periodSelect" aria-label="Período">
+            <option value="24h">Últimas 24 horas</option>
+            <option value="7d">Últimos 7 dias</option>
+            <option value="1h">Última hora</option>
+          </select>
+          <span class="chev" data-icon="chevron-down"></span>
+        </div>
+        <button class="icon-btn" data-palette aria-label="Buscar (Ctrl K)"><span data-icon="search"></span></button>
+        <a class="icon-btn" href="alertas.html" aria-label="Alertas ativos"><span data-icon="bell"></span><span class="notif"></span></a>
+        <div class="avatar" title="Débora Lima">DL</div>
+      </div>
+    </header>
+
+    <div class="grid grid-4 mb-20">
+      <a class="card kpi" href="servicos.html">
+        <div class="kpi-top">
+          <span class="kpi-label">Serviços saudáveis</span>
+          <span class="delta"><span data-icon="arrow-up"></span>9%</span>
+        </div>
+        <div class="kpi-value">98<span class="total">/ 124</span></div>
+        <div class="kpi-foot">em operação</div>
+        <div class="kpi-gauge"><div class="meter" data-tone="green"><span style="width:79%"></span></div></div>
+      </a>
+      <a class="card kpi" href="alertas.html">
+        <div class="kpi-top">
+          <span class="kpi-label">Alertas ativos</span>
+          <span class="delta is-bad"><span data-icon="arrow-up"></span>36%</span>
+        </div>
+        <div class="kpi-value is-critical">12<span class="total">/ 49</span></div>
+        <div class="kpi-foot">sem tratativa</div>
+        <div class="kpi-gauge"><div class="meter" data-tone="red"><span style="width:24%"></span></div></div>
+      </a>
+      <a class="card kpi" href="metricas.html">
+        <div class="kpi-top">
+          <span class="kpi-label">Latência média</span>
+          <span class="delta is-warn"><span data-icon="arrow-up"></span>28%</span>
+        </div>
+        <div class="kpi-value">124<span class="unit">ms</span></div>
+        <div class="kpi-spark" id="latSpark"></div>
+      </a>
+      <a class="card kpi" href="logs.html?level=error">
+        <div class="kpi-top">
+          <span class="kpi-label">Erros (5xx)</span>
+          <span class="delta is-bad"><span data-icon="arrow-up"></span>2%</span>
+        </div>
+        <div class="kpi-value">0,8<span class="unit">%</span></div>
+        <div class="kpi-spark" id="errSpark"></div>
+      </a>
+    </div>
+
+    <div class="grid grid-2-1 mb-20">
+      <section class="card">
+        <div class="card-head">
+          <div class="card-title"><span data-icon="activity"></span>Tráfego de Requisições</div>
+          <div class="select-wrap compact">
+            <select class="select" id="trafficRange" aria-label="Intervalo do gráfico">
+              <option value="24h">Últimas 24 horas</option>
+              <option value="7d">Últimos 7 dias</option>
+            </select>
+            <span class="chev" data-icon="chevron-down"></span>
+          </div>
+        </div>
+        <div class="card-body" style="padding-top:2px">
+          <div class="row-between mb-12">
+            <div class="chart-value" id="trafficTotal">—</div>
+            <div class="chart-meta"><span>req/min</span><span id="trafficPeak">—</span></div>
+          </div>
+          <div class="chart" id="trafficChart"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <div class="card-title"><span data-icon="circle-dot"></span>Status dos Serviços</div>
+          <a class="icon-btn" href="servicos.html" aria-label="Ver serviços"><span data-icon="arrow-up-right"></span></a>
+        </div>
+        <div class="card-body" style="padding-top:0">
+          <div class="list" id="statusList"></div>
+        </div>
+        <div class="card-foot">
+          <span class="dim" style="font-size:11px">Atualizado há 12 segundos</span>
+          <a class="card-link" href="servicos.html">Ver todos <span data-icon="arrow-right"></span></a>
+        </div>
+      </section>
+    </div>
+
+    <section class="card">
+      <div class="card-head">
+        <div class="card-title"><span data-icon="clock"></span>Últimos Eventos</div>
+        <div class="row-inline">
+          <span class="dim" style="font-size:11px" id="eventCount">—</span>
+          <a class="card-link" href="logs.html">Abrir logs <span data-icon="arrow-right"></span></a>
+        </div>
+      </div>
+      <div class="card-body tight">
+        <div class="table-wrap">
+          <table class="data">
+            <thead>
+              <tr>
+                <th style="width:188px">Hora</th>
+                <th style="width:150px">Serviço</th>
+                <th style="width:90px">Tipo</th>
+                <th>Mensagem</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="eventRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/icons.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/overview.js"></script>
+</body>
+</html>

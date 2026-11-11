@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alertas e incidentes — SrHarpia</title>
+<link rel="icon" href="assets/img/mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap.min.css">
+<link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body data-page="alertas">
+<div class="shell">
+  <aside class="sidebar">
+    <a class="brand" href="index.html" aria-label="SrHarpia — início"><img src="assets/img/logo.svg" alt="SrHarpia"></a>
+    <nav class="nav" aria-label="Navegação principal">
+      <a class="nav-item" data-nav="visao" href="index.html"><span data-icon="home"></span>Visão geral</a>
+      <a class="nav-item" data-nav="topologia" href="topologia.html"><span data-icon="git-fork"></span>Topológico</a>
+      <a class="nav-item" data-nav="servicos" href="servicos.html"><span data-icon="boxes"></span>Serviços</a>
+      <a class="nav-item" data-nav="tracing" href="tracing.html"><span data-icon="waypoints"></span>Tracing</a>
+      <a class="nav-item" data-nav="metricas" href="metricas.html"><span data-icon="activity"></span>Métricas</a>
+      <a class="nav-item" data-nav="logs" href="logs.html"><span data-icon="terminal"></span>Logs</a>
+      <a class="nav-item" data-nav="alertas" href="alertas.html"><span data-icon="bell"></span>Alertas</a>
+      <div class="nav-sep"></div>
+      <a class="nav-item" data-nav="second-brain" href="second-brain.html"><span data-icon="brain"></span>Second brain</a>
+      <a class="nav-item" data-nav="configuracoes" href="configuracoes.html"><span data-icon="settings"></span>Configurações</a>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="version">SrHarpia v2.8.0</div>
+      <div class="cluster">prd-south · 124 serviços</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="page-head">
+      <div>
+        <div class="title-row">
+          <button class="icon-btn nav-toggle" data-nav-toggle aria-label="Abrir menu"><span data-icon="list"></span></button>
+          <h1 class="page-title">Alertas e incidentes</h1>
+        </div>
+        <p class="page-sub">Sintomas de impacto no usuário, reconhecimento do plantão e histórico de incidentes.</p>
+      </div>
+      <div class="head-actions">
+        <button class="btn btn-lime" id="newRule"><span data-icon="plus"></span>Nova regra</button>
+        <button class="icon-btn" data-palette aria-label="Buscar (Ctrl K)"><span data-icon="search"></span></button>
+        <div class="avatar" title="Débora Lima">DL</div>
+      </div>
+    </header>
+
+    <div class="stat-strip mb-20">
+      <div class="stat"><div class="v" style="color:var(--red)" id="countActive">12</div><div class="k">alertas ativos</div></div>
+      <div class="stat"><div class="v" id="countAck">3</div><div class="k">reconhecidos</div></div>
+      <div class="stat"><div class="v" id="countSilenced">2</div><div class="k">silenciados</div></div>
+      <div class="stat"><div class="v">18<span style="font-size:12px;color:var(--text-3)">min</span></div><div class="k">MTTR nas últimas 24h</div></div>
+    </div>
+
+    <div class="tabs mb-20" data-tabs="alerts">
+      <button class="tab is-active" data-tab="active">Ativos <span class="count" id="tabActiveCount">—</span></button>
+      <button class="tab" data-tab="history">Histórico</button>
+      <button class="tab" data-tab="rules">Regras <span class="count" id="tabRuleCount">—</span></button>
+    </div>
+
+    <div data-tab-panel="active">
+      <div class="grid grid-3-1">
+        <section class="card">
+          <div class="card-head">
+            <div class="card-title"><span data-icon="alert-triangle"></span>Alertas ativos</div>
+            <span class="dim" style="font-size:11px">ordem de severidade</span>
+          </div>
+          <div class="card-body tight" id="alertList"></div>
+        </section>
+
+        <div class="stack">
+          <section class="card">
+            <div class="card-head"><div class="card-title"><span data-icon="clock"></span>Linha do tempo</div></div>
+            <div class="card-body" style="padding-top:4px">
+              <div class="timeline">
+                <div class="timeline-item" data-tone="red"><div class="t">Alerta de latência aberto em api-gateway</div><div class="d">há 12 min · p95 412ms</div></div>
+                <div class="timeline-item" data-tone="lime"><div class="t">Checkout reconhecido por Débora Lima</div><div class="d">há 34 min · plantão</div></div>
+                <div class="timeline-item"><div class="t">Erro 5xx normalizado em nginx</div><div class="d">há 1h · automático</div></div>
+                <div class="timeline-item" data-tone="lime"><div class="t">Incidente INC-2084 encerrado</div><div class="d">há 2h · postmortem criado</div></div>
+                <div class="timeline-item"><div class="t">Regra de saturação ajustada para 85%</div><div class="d">há 5h · SRE</div></div>
+              </div>
+            </div>
+          </section>
+          <section class="card">
+            <div class="card-head"><div class="card-title"><span data-icon="trending-up"></span>Regras mais disparadas</div></div>
+            <div class="card-body" style="padding-top:0">
+              <div class="row-between" style="padding:8px 0;border-bottom:1px solid var(--line-soft)"><span class="muted" style="font-size:11.5px">Latência p95</span><span class="num">34</span></div>
+              <div class="row-between" style="padding:8px 0;border-bottom:1px solid var(--line-soft)"><span class="muted" style="font-size:11.5px">Taxa de erro 5xx</span><span class="num">21</span></div>
+              <div class="row-between" style="padding:8px 0;border-bottom:1px solid var(--line-soft)"><span class="muted" style="font-size:11.5px">Saturação de memória</span><span class="num">12</span></div>
+              <div class="row-between" style="padding:8px 0"><span class="muted" style="font-size:11.5px">Consumer lag</span><span class="num">7</span></div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div data-tab-panel="history" hidden>
+      <section class="card">
+        <div class="card-head"><div class="card-title"><span data-icon="file-text"></span>Incidentes recentes</div></div>
+        <div class="card-body tight">
+          <div class="table-wrap">
+            <table class="data">
+              <thead><tr><th>Incidente</th><th>Serviço</th><th>Iniciado</th><th>Resolvido</th><th class="cell-num">Duração</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td class="cell-main">INC-2084 · Latência no checkout</td><td class="muted">api-gateway</td><td class="mono dim">hoje 14:12</td><td class="mono dim">hoje 14:50</td><td class="cell-num">38min</td><td><span class="status" data-state="ok"><span class="dot"></span>Resolvido</span></td></tr>
+                <tr><td class="cell-main">INC-2081 · Erro 5xx no frontend</td><td class="muted">frontend</td><td class="mono dim">ontem 22:04</td><td class="mono dim">ontem 22:19</td><td class="cell-num">15min</td><td><span class="status" data-state="ok"><span class="dot"></span>Resolvido</span></td></tr>
+                <tr><td class="cell-main">INC-2078 · Nó PC-02 reiniciado</td><td class="muted">worker</td><td class="mono dim">ontem 09:31</td><td class="mono dim">ontem 09:47</td><td class="cell-num">16min</td><td><span class="status" data-state="ok"><span class="dot"></span>Resolvido</span></td></tr>
+                <tr><td class="cell-main">INC-2075 · Consumer lag no worker</td><td class="muted">queue</td><td class="mono dim">09 nov 18:22</td><td class="mono dim">09 nov 19:02</td><td class="cell-num">40min</td><td><span class="status" data-state="ok"><span class="dot"></span>Resolvido</span></td></tr>
+                <tr><td class="cell-main">INC-2071 · Cache Redis indisponível</td><td class="muted">cache-redis</td><td class="mono dim">07 nov 03:10</td><td class="mono dim">07 nov 03:14</td><td class="cell-num">4min</td><td><span class="status" data-state="ok"><span class="dot"></span>Resolvido</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card-foot">
+          <span class="dim" style="font-size:11px">MTTR médio de 18 minutos nos últimos 30 dias</span>
+          <a class="card-link" href="second-brain.html?note=postmortem-12-10">Abrir postmortem <span data-icon="external-link"></span></a>
+        </div>
+      </section>
+    </div>
+
+    <div data-tab-panel="rules" hidden>
+      <section class="card">
+        <div class="card-head">
+          <div class="card-title"><span data-icon="sliders"></span>Regras de alerta</div>
+          <span class="dim" style="font-size:11px">revisão trimestral · regras sem ação são removidas</span>
+        </div>
+        <div class="card-body tight">
+          <div class="table-wrap">
+            <table class="data">
+              <thead><tr><th>Regra</th><th>Condição</th><th>Serviço</th><th>Severidade</th><th class="cell-num">Disparos 30d</th><th>Ativa</th></tr></thead>
+              <tbody id="rulesRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script src="assets/js/icons.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/alerts.js"></script>
+</body>
+</html>

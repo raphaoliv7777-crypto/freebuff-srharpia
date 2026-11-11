@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Métricas — SrHarpia</title>
+<link rel="icon" href="assets/img/mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap.min.css">
+<link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body data-page="metricas">
+<div class="shell">
+  <aside class="sidebar">
+    <a class="brand" href="index.html" aria-label="SrHarpia — início"><img src="assets/img/logo.svg" alt="SrHarpia"></a>
+    <nav class="nav" aria-label="Navegação principal">
+      <a class="nav-item" data-nav="visao" href="index.html"><span data-icon="home"></span>Visão geral</a>
+      <a class="nav-item" data-nav="topologia" href="topologia.html"><span data-icon="git-fork"></span>Topológico</a>
+      <a class="nav-item" data-nav="servicos" href="servicos.html"><span data-icon="boxes"></span>Serviços</a>
+      <a class="nav-item" data-nav="tracing" href="tracing.html"><span data-icon="waypoints"></span>Tracing</a>
+      <a class="nav-item" data-nav="metricas" href="metricas.html"><span data-icon="activity"></span>Métricas</a>
+      <a class="nav-item" data-nav="logs" href="logs.html"><span data-icon="terminal"></span>Logs</a>
+      <a class="nav-item" data-nav="alertas" href="alertas.html"><span data-icon="bell"></span>Alertas</a>
+      <div class="nav-sep"></div>
+      <a class="nav-item" data-nav="second-brain" href="second-brain.html"><span data-icon="brain"></span>Second brain</a>
+      <a class="nav-item" data-nav="configuracoes" href="configuracoes.html"><span data-icon="settings"></span>Configurações</a>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="version">SrHarpia v2.8.0</div>
+      <div class="cluster">prd-south · 124 serviços</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="page-head">
+      <div>
+        <div class="title-row">
+          <button class="icon-btn nav-toggle" data-nav-toggle aria-label="Abrir menu"><span data-icon="list"></span></button>
+          <h1 class="page-title">Métricas</h1>
+        </div>
+        <p class="page-sub">Séries temporais de alta frequência dos nós de infraestrutura · cluster prd-south.</p>
+      </div>
+      <div class="head-actions">
+        <div class="segmented" id="rangeGroup" role="group" aria-label="Janela de tempo">
+          <button data-range="1h">1h</button>
+          <button data-range="6h">6h</button>
+          <button data-range="24h" class="is-active">24h</button>
+          <button data-range="7d">7d</button>
+        </div>
+        <button class="icon-btn" data-palette aria-label="Buscar (Ctrl K)"><span data-icon="search"></span></button>
+        <a class="icon-btn" href="alertas.html" aria-label="Alertas ativos"><span data-icon="bell"></span><span class="notif"></span></a>
+        <div class="avatar" title="Débora Lima">DL</div>
+      </div>
+    </header>
+
+    <div class="grid grid-260">
+      <aside class="card" style="align-self:start">
+        <div class="card-head" style="padding-bottom:10px"><div class="card-title"><span data-icon="server"></span>Nós monitorados</div></div>
+        <div class="card-body" style="padding:0 10px 12px" id="hostList"></div>
+        <div class="card-foot" style="padding:12px 16px">
+          <span class="dim" style="font-size:10.5px"><span class="dot" data-state="ok" style="margin-right:6px"></span>4 nós · 2 exigem atenção</span>
+        </div>
+      </aside>
+
+      <div class="stack">
+        <div class="stat-strip" id="hostStats"></div>
+
+        <div class="grid grid-2">
+          <section class="card">
+            <div class="card-head">
+              <div class="card-title"><span data-icon="cpu"></span>CPU</div>
+              <span class="mono" style="font-size:12px;color:var(--text-2)" id="cpuNow">—</span>
+            </div>
+            <div class="card-body" style="padding-top:0"><div class="chart" id="cpuChart"></div></div>
+          </section>
+          <section class="card">
+            <div class="card-head">
+              <div class="card-title"><span data-icon="memory"></span>Memória</div>
+              <span class="mono" style="font-size:12px;color:var(--text-2)" id="memNow">—</span>
+            </div>
+            <div class="card-body" style="padding-top:0"><div class="chart" id="memChart"></div></div>
+          </section>
+          <section class="card">
+            <div class="card-head">
+              <div class="card-title"><span data-icon="hard-drive"></span>Disco (I/O)</div>
+              <span class="mono" style="font-size:12px;color:var(--text-2)" id="diskNow">—</span>
+            </div>
+            <div class="card-body" style="padding-top:0"><div class="chart" id="diskChart"></div></div>
+          </section>
+          <section class="card">
+            <div class="card-head">
+              <div class="card-title"><span data-icon="globe"></span>Rede</div>
+              <span class="mono" style="font-size:12px;color:var(--text-2)" id="netNow">—</span>
+            </div>
+            <div class="card-body" style="padding-top:0"><div class="chart" id="netChart"></div></div>
+          </section>
+        </div>
+
+        <div class="grid grid-2-1">
+          <section class="card">
+            <div class="card-head">
+              <div class="card-title"><span data-icon="layers"></span>Top processos</div>
+              <span class="dim" style="font-size:10.5px" id="procHost">—</span>
+            </div>
+            <div class="card-body tight">
+              <div class="table-wrap">
+                <table class="data">
+                  <thead><tr><th>Processo</th><th class="cell-num">CPU</th><th class="cell-num">Memória</th><th class="cell-num">Reinícios</th></tr></thead>
+                  <tbody id="procRows"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+          <section class="card">
+            <div class="card-head"><div class="card-title"><span data-icon="clock"></span>Eventos de infraestrutura</div></div>
+            <div class="card-body" style="padding-top:6px">
+              <div class="timeline">
+                <div class="timeline-item" data-tone="lime"><div class="t">Escala horizontal do worker 8 → 12 réplicas</div><div class="d">há 12 min · autoscaler</div></div>
+                <div class="timeline-item"><div class="t">Deploy api-gateway v2.8.3</div><div class="d">há 1h · pipeline</div></div>
+                <div class="timeline-item" data-tone="red"><div class="t">Nó PC-02 reiniciado após falha de memória</div><div class="d">há 2h · infraestrutura</div></div>
+                <div class="timeline-item"><div class="t">Rotação de credenciais do banco</div><div class="d">há 6h · segurança</div></div>
+                <div class="timeline-item"><div class="t">Cache Redis promovido a réplica primária</div><div class="d">há 9h · plataforma</div></div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="assets/js/icons.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/metrics.js"></script>
+</body>
+</html>

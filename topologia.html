@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mapa topológico — SrHarpia</title>
+<link rel="icon" href="assets/img/mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap.min.css">
+<link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body data-page="topologia">
+<div class="shell">
+  <aside class="sidebar">
+    <a class="brand" href="index.html" aria-label="SrHarpia — início"><img src="assets/img/logo.svg" alt="SrHarpia"></a>
+    <nav class="nav" aria-label="Navegação principal">
+      <a class="nav-item" data-nav="visao" href="index.html"><span data-icon="home"></span>Visão geral</a>
+      <a class="nav-item" data-nav="topologia" href="topologia.html"><span data-icon="git-fork"></span>Topológico</a>
+      <a class="nav-item" data-nav="servicos" href="servicos.html"><span data-icon="boxes"></span>Serviços</a>
+      <a class="nav-item" data-nav="tracing" href="tracing.html"><span data-icon="waypoints"></span>Tracing</a>
+      <a class="nav-item" data-nav="metricas" href="metricas.html"><span data-icon="activity"></span>Métricas</a>
+      <a class="nav-item" data-nav="logs" href="logs.html"><span data-icon="terminal"></span>Logs</a>
+      <a class="nav-item" data-nav="alertas" href="alertas.html"><span data-icon="bell"></span>Alertas</a>
+      <div class="nav-sep"></div>
+      <a class="nav-item" data-nav="second-brain" href="second-brain.html"><span data-icon="brain"></span>Second brain</a>
+      <a class="nav-item" data-nav="configuracoes" href="configuracoes.html"><span data-icon="settings"></span>Configurações</a>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="version">SrHarpia v2.8.0</div>
+      <div class="cluster">prd-south · 124 serviços</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="page-head">
+      <div>
+        <div class="title-row">
+          <button class="icon-btn nav-toggle" data-nav-toggle aria-label="Abrir menu"><span data-icon="list"></span></button>
+          <h1 class="page-title">Mapa topológico</h1>
+        </div>
+        <p class="page-sub">Dependências observadas nos últimos 5 minutos · cluster prd-south · 124 serviços.</p>
+      </div>
+      <div class="head-actions">
+        <label class="search-field" for="nodeSearch">
+          <span data-icon="search"></span>
+          <input id="nodeSearch" type="text" placeholder="Buscar nó, serviço ou IP" autocomplete="off">
+          <kbd>ctrl k</kbd>
+        </label>
+        <a class="icon-btn" href="alertas.html" aria-label="Alertas ativos"><span data-icon="bell"></span><span class="notif"></span></a>
+        <div class="avatar" title="Débora Lima">DL</div>
+      </div>
+    </header>
+
+    <section class="card topo-card mb-20">
+      <div class="topo-toolbar">
+        <div class="card-title"><span data-icon="git-fork"></span>Mapa topológico <span class="dim" style="font-size:11px;font-weight:400">janela de 5 minutos</span></div>
+        <div class="topo-tools">
+          <span class="topo-zoom-label" id="zoomLabel">Zoom 100%</span>
+          <button class="tool" data-zoom="out" aria-label="Afastar"><span data-icon="zoom-out"></span></button>
+          <button class="tool" data-zoom="in" aria-label="Aproximar"><span data-icon="zoom-in"></span></button>
+          <button class="tool" data-zoom="fit" aria-label="Ajustar à tela"><span data-icon="maximize"></span></button>
+          <button class="tool" id="toggleLabels" aria-label="Exibir latência das conexões" title="Latência das conexões"><span data-icon="list"></span></button>
+          <button class="tool" id="toggleFlow" aria-label="Animar fluxo" title="Animar fluxo"><span data-icon="activity"></span></button>
+        </div>
+      </div>
+
+      <div class="topo-viewport" id="topoViewport">
+        <div class="topo-world" id="topoWorld">
+          <svg class="topo-edges" id="topoEdges" viewBox="0 0 980 430" aria-hidden="true"></svg>
+        </div>
+        <aside class="topo-inspector" id="topoInspector" aria-hidden="true" aria-label="Detalhes do nó"></aside>
+      </div>
+
+      <div class="topo-legend">
+        <div class="items">
+          <span><span class="dot" style="background:#1AFF53"></span>até 80ms</span>
+          <span><span class="dot" style="background:#FFC61A"></span>80–200ms</span>
+          <span><span class="dot" style="background:#FF2121"></span>acima de 200ms</span>
+        </div>
+        <span class="dim">Arraste para mover · Ctrl + scroll para zoom · clique no nó para detalhes</span>
+      </div>
+    </section>
+
+    <div class="grid grid-2-1">
+      <section class="card">
+        <div class="card-head">
+          <div class="card-title"><span data-icon="terminal"></span>Logs e Registros</div>
+          <a class="card-link" href="logs.html">Abrir stream <span data-icon="arrow-right"></span></a>
+        </div>
+        <div class="card-body" style="padding-top:4px">
+          <div id="topoLogs"></div>
+        </div>
+        <div class="card-foot">
+          <span class="dim" style="font-size:11px"><span class="dot pulse" data-state="ok" style="margin-right:6px"></span>Fluxo em tempo real · 124 serviços</span>
+          <a class="card-link" href="logs.html?service=api-gateway">api-gateway <span data-icon="arrow-up-right"></span></a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <div class="card-title"><span data-icon="cpu"></span>Uso das Peças</div>
+          <div class="select-wrap compact">
+            <select class="select" id="hostSelect" aria-label="Nó monitorado">
+              <option value="pc-01">PC-01</option>
+              <option value="pc-02">PC-02</option>
+              <option value="pc-03">PC-03</option>
+              <option value="pc-04">PC-04</option>
+            </select>
+            <span class="chev" data-icon="chevron-down"></span>
+          </div>
+        </div>
+        <div class="card-body" style="padding-top:2px" id="usageBody"></div>
+        <div class="card-foot">
+          <span class="dim" style="font-size:11px">resolução 10s · 8.640 pontos</span>
+          <a class="card-link" href="metricas.html">Métricas <span data-icon="arrow-right"></span></a>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script src="assets/js/icons.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/topology.js"></script>
+</body>
+</html>

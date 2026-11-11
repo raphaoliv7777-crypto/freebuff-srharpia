@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Serviços — SrHarpia</title>
+<link rel="icon" href="assets/img/mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap.min.css">
+<link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body data-page="servicos">
+<div class="shell">
+  <aside class="sidebar">
+    <a class="brand" href="index.html" aria-label="SrHarpia — início"><img src="assets/img/logo.svg" alt="SrHarpia"></a>
+    <nav class="nav" aria-label="Navegação principal">
+      <a class="nav-item" data-nav="visao" href="index.html"><span data-icon="home"></span>Visão geral</a>
+      <a class="nav-item" data-nav="topologia" href="topologia.html"><span data-icon="git-fork"></span>Topológico</a>
+      <a class="nav-item" data-nav="servicos" href="servicos.html"><span data-icon="boxes"></span>Serviços</a>
+      <a class="nav-item" data-nav="tracing" href="tracing.html"><span data-icon="waypoints"></span>Tracing</a>
+      <a class="nav-item" data-nav="metricas" href="metricas.html"><span data-icon="activity"></span>Métricas</a>
+      <a class="nav-item" data-nav="logs" href="logs.html"><span data-icon="terminal"></span>Logs</a>
+      <a class="nav-item" data-nav="alertas" href="alertas.html"><span data-icon="bell"></span>Alertas</a>
+      <div class="nav-sep"></div>
+      <a class="nav-item" data-nav="second-brain" href="second-brain.html"><span data-icon="brain"></span>Second brain</a>
+      <a class="nav-item" data-nav="configuracoes" href="configuracoes.html"><span data-icon="settings"></span>Configurações</a>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="version">SrHarpia v2.8.0</div>
+      <div class="cluster">prd-south · 124 serviços</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="page-head">
+      <div>
+        <div class="title-row">
+          <button class="icon-btn nav-toggle" data-nav-toggle aria-label="Abrir menu"><span data-icon="list"></span></button>
+          <h1 class="page-title">Serviços</h1>
+        </div>
+        <p class="page-sub">Catálogo de microsserviços, saúde e dependências observadas no cluster prd-south.</p>
+      </div>
+      <div class="head-actions">
+        <button class="btn btn-lime" id="newMonitor"><span data-icon="plus"></span>Novo monitor</button>
+        <button class="icon-btn" data-palette aria-label="Buscar (Ctrl K)"><span data-icon="search"></span></button>
+        <a class="icon-btn" href="alertas.html" aria-label="Alertas ativos"><span data-icon="bell"></span><span class="notif"></span></a>
+        <div class="avatar" title="Débora Lima">DL</div>
+      </div>
+    </header>
+
+    <div class="stat-strip mb-20">
+      <div class="stat"><div class="v">98</div><div class="k">saudáveis de 124</div></div>
+      <div class="stat"><div class="v" style="color:var(--amber)">12</div><div class="k">em subdesempenho</div></div>
+      <div class="stat"><div class="v" style="color:var(--red)">4</div><div class="k">exigem atenção</div></div>
+      <div class="stat"><div class="v">92%</div><div class="k">cobertura de tracing</div></div>
+    </div>
+
+    <section class="card">
+      <div class="card-head" style="padding-bottom:14px">
+        <div class="card-title"><span data-icon="boxes"></span>Todos os serviços</div>
+        <span class="dim" style="font-size:11px" id="svcCount">—</span>
+      </div>
+      <div class="filter-bar" style="border-top:1px solid var(--line-soft)">
+        <label class="search-field" for="svcSearch">
+          <span data-icon="search"></span>
+          <input id="svcSearch" type="text" placeholder="Buscar por nome, id ou IP" autocomplete="off">
+        </label>
+        <div class="select-wrap compact">
+          <select class="select" id="kindFilter" aria-label="Tipo de serviço"></select>
+          <span class="chev" data-icon="chevron-down"></span>
+        </div>
+        <div class="select-wrap compact">
+          <select class="select" id="statusFilter" aria-label="Saúde do serviço">
+            <option value="">Toda saúde</option>
+            <option value="ok">Operacional</option>
+            <option value="warn">Subdesempenho</option>
+            <option value="crit">Atenção</option>
+          </select>
+          <span class="chev" data-icon="chevron-down"></span>
+        </div>
+        <button class="btn btn-outline" id="exportSvc"><span data-icon="download"></span>Exportar</button>
+      </div>
+      <div class="card-body tight">
+        <div class="table-wrap">
+          <table class="data">
+            <thead>
+              <tr>
+                <th>Serviço</th>
+                <th>Tipo</th>
+                <th class="cell-num">Req/s</th>
+                <th class="cell-num">Latência p95</th>
+                <th class="cell-num">Erros</th>
+                <th class="cell-num">Dependências</th>
+                <th class="cell-num">SLO</th>
+                <th>Saúde</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="svcRows"></tbody>
+          </table>
+        </div>
+        <div class="row-between" style="padding:14px 0 4px">
+          <span class="dim" style="font-size:11px">Telemetria atualizada a cada 10 segundos</span>
+          <a class="card-link" href="topologia.html">Ver mapa topológico <span data-icon="arrow-right"></span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/icons.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/services.js"></script>
+</body>
+</html>
